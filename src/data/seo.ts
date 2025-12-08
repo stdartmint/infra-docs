@@ -10,5 +10,10 @@ export default [
     title: "SE Ranking",
     href: "https://seranking.com/",
     description: "SEO platform"
+  },
+  {
+    title: "Web Archive",
+    href: "https://web.archive.org/",
+    description: "View archived versions of websites"
   }
 ] as ResourceLink[]
