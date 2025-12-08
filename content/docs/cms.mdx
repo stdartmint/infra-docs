@@ -1,0 +1,16 @@
+---
+title: CMS
+icon: FileBraces
+---
+
+import { ResourceCard } from "@/components/resource-card"
+import links from "@/data/cms"
+
+- **Strapi** - Использовал. Сложновато работать с типами по моделям, но в целом ок
+- **Sanity** - Пробовал. Много всего кастомизируется, становится платной после **>x users**
+
+<div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
+  {links.map(item => (
+    <ResourceCard key={item.href} href={item.href} title={item.title} description={item.description} />
+  ))}
+</div>
