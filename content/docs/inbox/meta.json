@@ -1,4 +1,5 @@
 {
   "title": "Inbox",
-  "icon": "Inbox"
+  "icon": "Inbox",
+  "collapsible": false
 }
