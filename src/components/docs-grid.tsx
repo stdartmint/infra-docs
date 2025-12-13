@@ -1,40 +1,48 @@
-import { icons } from "lucide-react"
-import { createElement } from "react"
+import React from "react"
 import { Card } from "fumadocs-ui/components/card"
+import { Separator as SeparatorComponent } from "@/components/separator"
+import { Folder, Item, Separator } from "fumadocs-core/page-tree"
 import { source } from "@/lib/source"
-import { ResourcesGridContainer, LinkItem } from "@/components/resource-grid"
+import { ResourcesGridContainer } from "@/components/resource-grid"
 
-const Icon: React.FC<{ icon: string }> = ({ icon }) => {
-  if (!icon) {
-    // You may set a default icon
-    return
-  }
-  if (icon in icons) return createElement(icons[icon as keyof typeof icons])
+const isFolder = (node: Folder | Item | Separator): node is Folder => {
+  return (node as Folder).children !== undefined && (node as Folder).children.length > 0
 }
 
 export const DocsResourcesGrid: React.FC<{ className?: string }> = ({ className }) => {
-  const pages = source.getPages()
+  let pages = source.getPages()
+  let tree = source.getPageTree()
 
-  const links = pages
-    .filter(page => page.url !== "/docs")
-    .map(page => ({
-      title: page.data.title,
-      href: page.url,
-      description: page.data.description,
-      icon: page.data.icon
-    }))
+  pages = pages.filter(page => page.url !== "/docs")
 
   return (
-    <ResourcesGridContainer className={className}>
-      {links.map(item => (
-        <Card
-          key={item.href}
-          href={item.href}
-          title={item.title}
-          description={item.description}
-          icon={item.icon ? <Icon icon={item.icon} /> : undefined}
-        />
+    <div>
+      {tree.children.map(category => (
+        <React.Fragment key={category.$id}>
+          {isFolder(category) && (
+            <>
+              <h3 className="flex items-center gap-2  pt-4">
+                <span className="text-gray-500 [&>svg]:w-[20px] [&>svg]:h-[20px]">{category.icon}</span>
+                {category.name}
+              </h3>
+              <SeparatorComponent />
+              <ResourcesGridContainer className={className}>
+                {category.children?.map(
+                  node =>
+                    node.type === "page" && (
+                      <Card
+                        key={(node as Item).url}
+                        href={(node as Item).url}
+                        title={(node as Item).name}
+                        description={(node as Item).description}
+                      />
+                    )
+                )}
+              </ResourcesGridContainer>
+            </>
+          )}
+        </React.Fragment>
       ))}
-    </ResourcesGridContainer>
+    </div>
   )
 }
